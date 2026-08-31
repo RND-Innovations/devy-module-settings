@@ -1,0 +1,14 @@
+{
+    "name": "rnd-innovations/devy-module-settings",
+    "description": "Centralized management for global settings provided by active modules.",
+    "type": "devy-module",
+    "require": {
+        "php": "^8.3",
+        "rnd-innovations/devy-core": "^1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "DeVy\\Modules\\Settings\\": "src/"
+        }
+    }
+}

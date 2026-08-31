@@ -1,0 +1,37 @@
+{% extends "@Admin/layouts/admin.twig" %}
+
+{% set _page = 'admin.settings' %}
+
+{% block content %}
+
+<div class="max-w-5xl mx-auto">
+
+	{# HEADER #}
+	{% embed "@Admin/components/page-header.twig" with {
+		title: "Site Settings",
+		subtitle: "Manage your website settings here"
+	} %}
+		{% block actions %}
+		    <button type="submit"
+			form="settingsForm"
+			class="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg shadow">
+			{{ icon('save', 'w-4 h-4')|raw }} Save
+		    </button>
+		{% endblock %}
+	{% endembed %}
+
+	<form id="settingsForm" method="post" action="{{ routes.save }}">
+	    {{ csrf_field() }}
+
+	    {% include "@Admin/components/schema-form.twig" with {
+		schema: schema,
+		values: settings,
+		root: "settings",
+		themes: themes|default({})
+	    } %}
+
+	</form>
+
+</div>
+
+{% endblock %}
