@@ -14,7 +14,7 @@ return [
     'meta' => [
         'name' => 'Site Settings',
         'description' => 'Centralized management for global settings provided by active modules.',        
-        'version' => '1.0.0',
+        'version' => '1.0.1',
         'author' => 'RND Innovations',
         'website' => 'https://rndvn.com',
         'license' => 'MIT',

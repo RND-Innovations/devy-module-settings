@@ -119,72 +119,198 @@ return [
                 'stores_value' => false,
             ],
 
-            'emails' => [
-                'path' => 'site.contact.emails',
-                'type' => 'textarea_line',
-                'label' => 'Email Addresses',
-                'hint' => 'One email address per line. First email will be the main email.',
-                'default' => [],
-            ],
-
             'phones' => [
                 'path' => 'site.contact.phones',
-                'type' => 'textarea_line',
+                'type' => 'repeater',
                 'label' => 'Phone Numbers',
-                'hint' => 'One phone number per line. First phone number will be the main number',
+                'add_label' => 'Add Phone',
+                'item_label' => '{label} {phone}',
+                'sortable' => true,
+                'min_items' => 1,                      // the first is the main number
                 'default' => [],
+                'default_item' => ['label' => '', 'phone' => '', 'type' => 'landline'],
+                'fields' => [
+                    'label' => [
+                        'type' => 'text',
+                        'label' => 'Label',
+                        'hint' => 'e.g. Hotline, Office, WhatsApp. The first entry is the main number.',
+                        'default' => '',
+                    ],
+                    'phone' => [
+                        'type' => 'text',
+                        'label' => 'Phone Number',
+                        'rules' => ['required', 'max:40'],
+                        'default' => '',
+                    ],
+                    'type' => [
+                        'type' => 'select',
+                        'label' => 'Type',
+                        'options' => [
+                            'landline' => 'Landline',
+                            'mobile'   => 'Mobile',
+                            'whatsapp' => 'WhatsApp',
+                            'fax'      => 'Fax',
+                            'other'    => 'Other',
+                        ],
+                        'default' => 'landline',
+                    ],
+                ],
+            ],
+
+            'emails' => [
+                'path' => 'site.contact.emails',
+                'type' => 'repeater',
+                'label' => 'Email Addresses',
+                'add_label' => 'Add Email',
+                'item_label' => '{label} <{email}>',   // e.g. "Sales <sales@acme.com>"
+                'sortable' => true,
+                'min_items' => 1,                      // the first is the main email
+                'default' => [],
+                'default_item' => ['label' => '', 'email' => ''],
+                'fields' => [
+                    'label' => [
+                        'type' => 'text',
+                        'label' => 'Label',
+                        'hint' => 'e.g. Sales, Support, General. The first entry is the main email.',
+                        'default' => '',
+                    ],
+                    'email' => [
+                        'type' => 'text',
+                        'label' => 'Email Address',
+                        'rules' => ['required', 'email'],
+                        'default' => '',
+                    ],
+                ],
             ],
 
             'social' => [
                 'path' => 'site.contact.social',
-                'type' => 'textarea_line',
+                'type' => 'repeater',
                 'label' => 'Social Links',
-                'hint' => 'One link(https://) per line. Invalid URLs may result broken links on the site.',
+                'add_label' => 'Add Social Link',
+                'item_label' => '{platform}',      // or '{platform} — {url}'
+                'sortable' => true,
                 'default' => [],
+                'default_item' => ['platform' => '', 'url' => ''],
+                'fields' => [
+                    'platform' => [
+                        'type' => 'select',
+                        'label' => 'Platform',
+                        'options' => [
+                            'facebook'  => 'Facebook',
+                            'instagram' => 'Instagram',
+                            'x'         => 'X / Twitter',
+                            'linkedin'  => 'LinkedIn',
+                            'youtube'   => 'YouTube',
+                            'tiktok'    => 'TikTok',
+                            'zalo'      => 'Zalo',
+                            'other'     => 'Other…',
+                        ],
+                        'rules' => ['required'],
+                    ],
+                    'url' => [
+                        'type' => 'text',
+                        'label' => 'URL',
+                        'hint' => 'Must start with https://',
+                        'rules' => ['required', 'url', 'starts_with:https://'],
+                    ],
+                ],
             ],
 
 
 
-            '_location' => [
+            '_branches' => [
                 'type' => 'separator',
-                'icon' => 'earth',
-                'label' => 'Primary Location',
-                'text' => 'Setup the main location of your site, if applicable. Branches can be added using a custom module.',
+                'icon' => 'map-pin',
+                'label' => 'Branches',
+                'text' => 'Add your locations. The first branch is used as the primary location.',
                 'stores_value' => false,
             ],
 
-            'address' => [
-                'path' => 'site.locations.0.address',
-                'type' => 'textarea_line',
-                'label' => 'Business Address',
-                'hint' => 'Postal or business address. Use new lines to seperate. Put postal code/zip at the bottom.',
+            'branches' => [
+                'path' => 'site.branches',
+                'type' => 'repeater',
+                'label' => 'Branches',
+                'add_label' => 'Add Branch',
+                'item_label' => '{name}',
+                'sortable' => true,
+                'min_items' => 1,                       // the first item is the primary branch
                 'default' => [],
-            ],
-
-            'country' => [
-                'path' => 'site.locations.0.country',
-                'type' => 'select',
-                'label' => 'Country',
-                'options' => [],
-                'options_source' => [
-                    'type'   => 'class',
-                    'target' => \DeVy\Core\Support\CountryRegistry::class,
-                    'method' => 'options',
+                'default_item' => [
+                    'id'        => null,
+                    'name'      => '',
+                    'address'   => [],
+                    'country'   => 'US',
+                    'locale'    => 'en_US',
+                    'phone'     => '',
+                    'email'     => '',
+                    'hours'     => '',
+                    'image_url' => '',
+                    'image_alt' => '',
+                    'map_url'   => '',
                 ],
-                'default' => 'US',
-            ],
+                'fields' => [
 
-            'locale' => [
-                'path' => 'site.locations.0.locale',
-                'type' => 'select',
-                'label' => 'Locale',
-                'options' => [],
-                'options_source' => [
-                    'type'   => 'class',
-                    'target' => \DeVy\Core\Support\LocaleRegistry::class,
-                    'method' => 'options',
+                    'id' => [
+                        'type' => 'hidden',             // stable key for sort/delete
+                    ],
+
+                    'name' => [
+                        'type' => 'text',
+                        'label' => 'Branch Name',
+                        'hint' => 'The first branch is treated as the primary location.',
+                        'rules' => ['required', 'max:120'],
+                        'default' => '',
+                    ],
+
+                    'address' => [
+                        'type' => 'textarea_line',
+                        'label' => 'Address',
+                        'hint' => 'Postal or business address. Use new lines to separate. Put postal code/zip at the bottom.',
+                        'rules' => ['required'],
+                        'default' => [],
+                    ],
+
+                    'phone' => [
+                        'type' => 'text',
+                        'label' => 'Phone',
+                        'rules' => ['nullable', 'max:40'],
+                        'default' => '',
+                    ],
+
+                    'email' => [
+                        'type' => 'text',
+                        'label' => 'Email',
+                        'rules' => ['nullable', 'email'],
+                        'default' => '',
+                    ],
+
+                    'hours' => [
+                        'type' => 'text',
+                        'label' => 'Opening Hours',
+                        'default' => '',
+                    ],
+
+                    'image_url' => [
+                        'type' => 'image',
+                        'label' => 'Image URL',
+                        'default' => '',
+                    ],
+
+                    'image_alt' => [
+                        'type' => 'text',
+                        'label' => 'Image ALT Text',
+                        'default' => '',
+                    ],
+
+                    'map_url' => [
+                        'type' => 'text',
+                        'label' => 'Map / Directions URL',
+                        'rules' => ['nullable', 'url'],
+                        'default' => '',
+                    ],
+
                 ],
-                'default' => 'en_US',
             ],
 
 
